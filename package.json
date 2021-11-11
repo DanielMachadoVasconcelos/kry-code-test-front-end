@@ -1,7 +1,7 @@
 {
   "name": "spring-react-app",
   "description": "Sample application using React with Spring Boot",
-  "proxy":"http://localhost:8080",
+  "proxy":"http://localhost:3000",
   "scripts": {
     "build": "webpack --mode production",
     "start": "webpack-dev-server --port 3000 --open"

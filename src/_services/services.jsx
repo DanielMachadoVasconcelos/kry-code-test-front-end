@@ -3,20 +3,27 @@ import {action, createStore, thunk} from 'easy-peasy'
 import axios from 'axios';
 
 const baseUrl = `${config.baseUri}/services`;
+const username = 'user';
+const password = 'password';
+const encodedBase64Token = Buffer.from(`${username}:${password}`).toString('base64');
+const authorization = `Basic ${encodedBase64Token}`;
+
 const headers = {
     'Access-Control-Allow-Origin' : '*',
     'Content-Type': 'application/json',
-    auth: {
-        username: 'user',
-        password: 'password'
-    }
+     'Authorization': authorization,
 }
-
+// {
+//     "serviceName": "great-service-poller",
+//     "username": "user",
+//     "uri": "https://localhost:443/new-api",
+//     "createdAt": 1636619801.682
+// }
 export const store = createStore({
     services: [],
     getAll: thunk((actions) => {
        axios.get(`${baseUrl}/`, { headers })
-            .then(function (response) {
+            .then(response => {
                 if (response.status == 200) {
                     actions.addService(response.data);
                 }
@@ -26,7 +33,7 @@ export const store = createStore({
             });
     }),
     addService: action((state, payload) => {
-        state.services.push(payload)
+        state.services = payload
     }),
     removeService: action(((state, payload) => {
         state.services.filter(function (value) {
@@ -37,7 +44,7 @@ export const store = createStore({
         const {data} = axios.post(`${baseUrl}/`, payload, { headers })
             .then(function (response) {
                 if (response.status == 200) {
-                    actions.addService(payload);
+                    actions.addService(response.data);
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -47,7 +54,7 @@ export const store = createStore({
         const {data} = axios.put(`${baseUrl}/${payload.name}`, payload.uri, { headers })
             .then(function (response) {
                 if (response.status == 200) {
-                    actions.addService(payload);
+                    actions.addService(response.data);
                 }
             }).catch(function (error) {
                 console.log(error);

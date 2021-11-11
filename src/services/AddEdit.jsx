@@ -17,7 +17,7 @@ function AddEdit({ history, match }) {
 
     // form validation rules
     const validationSchema = Yup.object().shape({
-        name: Yup.string()
+        serviceName: Yup.string()
             .required('Service name is required'),
         uri: Yup.string()
             .required('Service uri is required')
@@ -41,7 +41,7 @@ function AddEdit({ history, match }) {
             <div className="form-row">
                 <div className="form-group col-5">
                     <label>Service Name</label>
-                    <input name="name" type="text" ref={register} className={`form-control ${errors.name ? 'is-invalid' : ''}`} />
+                    <input name="serviceName" type="text" ref={register} className={`form-control ${errors.name ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">{errors.name?.message}</div>
                 </div>
                 <div className="form-group col-5">

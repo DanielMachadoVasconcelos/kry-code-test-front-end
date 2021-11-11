@@ -11,9 +11,9 @@ function List({ match }) {
     const deleteService = useStoreActions((actions) => actions.delete)
 
     useEffect(() => {
-        getAllServices().then(service => setServices(service));
+        getAllServices();
     }, []);
-
+    console.log(services)
     return (
         <div>
             <h1>Services</h1>
@@ -21,7 +21,6 @@ function List({ match }) {
             <table className="table table-striped">
                 <thead>
                 <tr>
-                    <th style={{ width: '20%' }}>Id</th>
                     <th style={{ width: '20%' }}>Name</th>
                     <th style={{ width: '20%' }}>URI</th>
                     <th style={{ width: '20%' }}>Username</th>
@@ -30,15 +29,14 @@ function List({ match }) {
                 </tr>
                 </thead>
                 <tbody>
-                {services && services.map(service =>
-                    <tr key={service.id}>
-                        <td>{service.id}</td>
-                        <td>{service.name}</td>
+                {services && services.map((service, index) =>
+                    <tr key={index}>
+                        <td>{service.serviceName}</td>
                         <td>{service.uri}</td>
                         <td>{service.username}</td>
-                        <td>{service.createAt}</td>
+                        <td>{service.createdAt}</td>
                         <td style={{ whiteSpace: 'nowrap' }}>
-                            <Link to={`${path}/edit/${service.id}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
+                            <Link to={`${path}/edit/${service.serviceName}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
                             <button onClick={() => deleteService(service)} className="btn btn-sm btn-danger btn-delete-service" disabled={service.isDeleting}>
                                 {service.isDeleting
                                     ? <span className="spinner-border spinner-border-sm"></span>
