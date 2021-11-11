@@ -4,7 +4,6 @@ import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 import { Nav } from '@/_components';
 import { Services } from '@/services';
 import { Home } from '@/home';
-import { Monitor } from '@/monitor';
 
 function App() {
     const { pathname } = useLocation();
@@ -18,7 +17,6 @@ function App() {
                     <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
                     <Route exact path="/" component={Home} />
                     <Route path="/services" component={Services} />
-                    <Route path="/monitor" component={Monitor} />
                     <Redirect from="*" to="/" />
                 </Switch>
             </div>

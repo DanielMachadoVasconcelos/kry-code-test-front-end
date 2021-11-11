@@ -4,18 +4,16 @@ import { useForm } from "react-hook-form";
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import {useStoreActions, useStoreState} from "easy-peasy";
+import {useStore, useStoreActions, useStoreState} from "easy-peasy";
 
 function AddEdit({ history, match }) {
     const { id } = match.params;
     const isAddMode = !id;
 
-    const [service, setService] = useState({});
-    const services = useStoreState((state) => state.services);
+    const service = useStoreState((state) => state.service);
     const createService = useStoreActions((actions) => actions.create);
     const updateService = useStoreActions((actions) => actions.update);
 
-    // form validation rules
     const validationSchema = Yup.object().shape({
         serviceName: Yup.string()
             .required('Service name is required'),
@@ -23,30 +21,38 @@ function AddEdit({ history, match }) {
             .required('Service uri is required')
     });
 
-    // functions to build form returned by useForm() hook
     const { register, handleSubmit, reset, setValue, errors, formState } = useForm({
         resolver: yupResolver(validationSchema)
     });
 
+    function create (data) {
+        createService(data);
+        history.push('.');
+    }
+
+    function update (data) {
+        updateService(data);
+        history.push('.');
+    }
+
     function onSubmit(data) {
         return isAddMode
-            ? createService(data)
-            : updateService(id, data);
+            ? create(data)
+            : update(data);
     }
 
     return (
-
-        <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
+        <form onSubmit={handleSubmit(onSubmit)} onReset={reset} >
             <h1>{isAddMode ? 'Add Service' : 'Edit Service'}</h1>
             <div className="form-row">
                 <div className="form-group col-5">
                     <label>Service Name</label>
-                    <input name="serviceName" type="text" ref={register} className={`form-control ${errors.name ? 'is-invalid' : ''}`} />
+                    <input value={service.serviceName} disabled={!isAddMode} name="serviceName" type="text" ref={register} className={`form-control ${errors.name ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">{errors.name?.message}</div>
                 </div>
                 <div className="form-group col-5">
                     <label>Service URI</label>
-                    <input name="uri" type="text" ref={register} className={`form-control ${errors.uri ? 'is-invalid' : ''}`} />
+                    <input value={service.uri} name="uri" type="text" ref={register} className={`form-control ${errors.uri ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">{errors.uri?.message}</div>
                 </div>
             </div>
@@ -59,7 +65,6 @@ function AddEdit({ history, match }) {
                 <Link to={isAddMode ? '.' : '..'} className="btn btn-link">Cancel</Link>
             </div>
         </form>
-
     )
 }
 

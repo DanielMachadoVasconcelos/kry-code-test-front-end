@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {useStoreActions, useStoreState} from "easy-peasy";
 
@@ -12,8 +12,17 @@ function List({ match }) {
 
     useEffect(() => {
         getAllServices();
-    }, []);
-    console.log(services)
+    }, [services]);
+
+    function remove (service) {
+        setServices(services.map(it => {
+            if (it.serviceName === service.serviceName) { it.isDeleting = true; }
+            return it;
+        }))
+        deleteService(service)
+        getAllServices()
+    }
+
     return (
         <div>
             <h1>Services</h1>
@@ -36,8 +45,9 @@ function List({ match }) {
                         <td>{service.username}</td>
                         <td>{service.createdAt}</td>
                         <td style={{ whiteSpace: 'nowrap' }}>
+                            <Link to={`${path}/monitor/${service.serviceName}`} className="btn btn-sm btn-success mr-1">Monitor</Link>
                             <Link to={`${path}/edit/${service.serviceName}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
-                            <button onClick={() => deleteService(service)} className="btn btn-sm btn-danger btn-delete-service" disabled={service.isDeleting}>
+                            <button onClick={() => remove(service)} className="btn btn-sm btn-danger btn-delete-service" disabled={service.isDeleting}>
                                 {service.isDeleting
                                     ? <span className="spinner-border spinner-border-sm"></span>
                                     : <span>Delete</span>
